@@ -1,4 +1,7 @@
-use std::io::{self, Write};
+use std::{
+    fmt,
+    io::{self, Write},
+};
 
 #[derive(Debug, PartialEq)]
 enum TodoItemStatus {
@@ -11,6 +14,17 @@ struct TodoItem {
     title: String,
     desc: Option<String>,
     status: TodoItemStatus,
+}
+
+impl fmt::Display for TodoItem {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{} {}",
+            self.title,
+            self.desc.as_ref().unwrap()
+        )
+    }
 }
 
 impl TodoItem {
@@ -50,6 +64,6 @@ fn main() {
     todo_data.iter_mut().enumerate().for_each(|(index, item)| {
         item.toggle_status();
         item.toggle_status();
-        println!("[{}] {:?}", index, item,);
+        println!("[{}] {}", index, item,);
     });
 }
