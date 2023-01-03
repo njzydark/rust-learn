@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "rust-learn"
+name = "simple-todo-cli"
 version = "0.1.0"
