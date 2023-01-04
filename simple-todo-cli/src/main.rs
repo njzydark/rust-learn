@@ -20,9 +20,9 @@ impl fmt::Display for TodoItem {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "{} {}",
+            "The todo title is {} and desc is {}",
             self.title,
-            self.desc.as_ref().unwrap()
+            self.desc.as_deref().unwrap_or("empty")
         )
     }
 }
