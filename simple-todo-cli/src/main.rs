@@ -42,14 +42,19 @@ enum YesOrNo {
     NO,
 }
 
-fn say_yes_or_no(message: &str, cb: &mut dyn FnMut(YesOrNo) -> ()) {
+fn say_yes_or_no(message: &str, default_value: YesOrNo, cb: &mut dyn FnMut(YesOrNo) -> ()) {
+    let default_tip = match default_value {
+        YesOrNo::YES => "Y/n",
+        YesOrNo::NO => "y/N",
+    };
     let mut input = String::new();
-    print!("{} (y/n): ", message);
+    print!("{} ({}): ", message, default_tip);
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut input).unwrap();
     match input.trim().as_ref() {
-        "y" => cb(YesOrNo::YES),
-        "n" => cb(YesOrNo::NO),
+        "y" | "Y" => cb(YesOrNo::YES),
+        "n" | "N" => cb(YesOrNo::NO),
+        "" => cb(default_value),
         _ => {
             println!("error input");
         }
@@ -80,16 +85,20 @@ fn main() {
     add_todo(&mut todo_data);
     add_todo(&mut todo_data);
 
-    say_yes_or_no("Should print todo data?", &mut |flag| match flag {
-        YesOrNo::YES => {
-            todo_data.iter_mut().enumerate().for_each(|(index, item)| {
-                item.toggle_status();
-                item.toggle_status();
-                println!("[{}] {}", index, item,);
-            });
-        }
-        YesOrNo::NO => {
-            println!("end");
-        }
-    });
+    say_yes_or_no(
+        "Should print todo data?",
+        YesOrNo::YES,
+        &mut |flag| match flag {
+            YesOrNo::YES => {
+                todo_data.iter_mut().enumerate().for_each(|(index, item)| {
+                    item.toggle_status();
+                    item.toggle_status();
+                    println!("[{}] {}", index, item,);
+                });
+            }
+            YesOrNo::NO => {
+                println!("end");
+            }
+        },
+    );
 }
